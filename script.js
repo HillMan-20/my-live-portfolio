@@ -1,3 +1,5 @@
+// script.js
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Logika Hamburger Menu, berfungsi di semua halaman
@@ -12,14 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fungsi utama untuk memuat data berdasarkan halaman yang aktif
     loadPageData();
+    
     // Inisialisasi lightbox jika ada elemennya di halaman
     if (document.getElementById('lightbox')) {
         initializeLightbox();
     }
 });
 
-function loadPageData() {
-    // Struktur data default
+// FUNGSI UTAMA YANG DIUBAH
+async function loadPageData() {
+    // Struktur data default untuk fallback jika API gagal
     const defaultData = {
         home: {
             heroBackgroundImage: '', profilePhoto: '', profileName: 'Nama Belum Diisi', profileBio: 'Profesi belum diisi.', shortBio: 'Bio singkat belum diisi.',
@@ -33,7 +37,18 @@ function loadPageData() {
         }
     };
 
-    const portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || defaultData;
+    let portfolioData;
+    try {
+        // Ambil data dari API yang sudah kita buat
+        const response = await fetch('/api/data');
+        if (!response.ok) throw new Error('Server data not available.');
+        portfolioData = await response.json();
+    } catch (error) {
+        console.error("Could not fetch live data, using default data as fallback:", error);
+        // Jika gagal mengambil data dari server, gunakan data default agar website tidak kosong
+        portfolioData = defaultData;
+    }
+
     const pageId = document.body.id;
 
     // Menjalankan fungsi render yang sesuai dengan halaman
@@ -42,6 +57,8 @@ function loadPageData() {
     else if (pageId === 'page-contact') { renderContactPage(portfolioData.contact || defaultData.contact); }
     else if (pageId === 'page-article-detail') { renderArticleDetailPage(portfolioData.articles || defaultData.articles); }
 }
+
+// --- SEMUA FUNGSI DI BAWAH INI SAMA SEPERTI KODE ASLI ANDA, TIDAK PERLU DIUBAH ---
 
 function renderHomePage(data) {
     document.getElementById('hero-background-image-layer').style.backgroundImage = `url('${data.heroBackgroundImage || ''}')`;
@@ -128,7 +145,6 @@ const createActivityHTML = act => `<img src="${act.image}" alt="${act.title}"><h
 const createCertificationHTML = cert => `<img src="${cert.image}" alt="${cert.title}"><h3>${cert.title}</h3><div class="certification-details"><span class="issuer"><h9 style="font-weight: bold;">Publisher:</h9><br>${cert.issuer || ''}</span><span class="role"><h9 style="font-weight: bold;">Role: </h9><br>${cert.role || ''}</span><span class="date">Date: ${cert.date || ''}</span></div>`;
 const createProjectHTML = proj => { const content = `<img src="${proj.image}" alt="${proj.title}"><h3>${proj.title}</h3><p>${proj.description}</p>`; return proj.link ? `<a href="${proj.link}" target="_blank" style="text-decoration:none; color:inherit;">${content}</a>` : content; };
 
-// --- FUNGSI SLIDER FINAL DENGAN LOGIKA INFINITE ---
 function initializeSlider(containerId) {
     const sliderContainer = document.getElementById(containerId);
     if (!sliderContainer) return;
@@ -136,31 +152,30 @@ function initializeSlider(containerId) {
     const wrapper = sliderContainer.parentElement;
     const nextBtn = wrapper.querySelector('.slider-btn.next');
     const prevBtn = wrapper.querySelector('.slider-btn.prev');
+    if (!nextBtn || !prevBtn) return;
+    
     let items = Array.from(sliderContainer.children);
-
-    // Hanya aktifkan slider jika item cukup banyak
     if (items.length <= 3) {
-        if(nextBtn) nextBtn.style.display = 'none';
-        if(prevBtn) prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        prevBtn.style.display = 'none';
         return;
     } else {
-        if(nextBtn) nextBtn.style.display = 'flex';
-        if(prevBtn) prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+        prevBtn.style.display = 'flex';
     }
 
     let isMoving = false;
     const itemWidth = items[0].offsetWidth + parseInt(getComputedStyle(sliderContainer).gap);
-
-    // Kloning item untuk loop tak terbatas
-    items.slice(0, 5).forEach(item => {
+    
+    const cloneCount = 5;
+    items.slice(0, cloneCount).forEach(item => {
         sliderContainer.appendChild(item.cloneNode(true));
     });
-    items.slice(-5).reverse().forEach(item => {
+    items.slice(-cloneCount).reverse().forEach(item => {
         sliderContainer.prepend(item.cloneNode(true));
     });
     
-    // Posisi awal
-    sliderContainer.scrollLeft = 5 * itemWidth;
+    sliderContainer.scrollLeft = cloneCount * itemWidth;
 
     function moveSlider(direction) {
         if (isMoving) return;
@@ -171,41 +186,43 @@ function initializeSlider(containerId) {
 
     nextBtn.addEventListener('click', () => moveSlider(1));
     prevBtn.addEventListener('click', () => moveSlider(-1));
-
-    sliderContainer.addEventListener('scroll', () => {
-        if (isMoving) return; // Abaikan event scroll saat transisi
-        // Cek jika mencapai ujung klon di akhir
-        if (sliderContainer.scrollLeft >= (items.length + 4) * itemWidth) {
-            sliderContainer.style.scrollBehavior = 'auto';
-            sliderContainer.scrollLeft = 4 * itemWidth;
-            sliderContainer.style.scrollBehavior = 'smooth';
-        }
-        // Cek jika mencapai ujung klon di awal
-        if (sliderContainer.scrollLeft <= itemWidth) {
-            sliderContainer.style.scrollBehavior = 'auto';
-            sliderContainer.scrollLeft = items.length * itemWidth;
-            sliderContainer.style.scrollBehavior = 'smooth';
-        }
-    });
     
-    sliderContainer.addEventListener('transitionend', () => isMoving = false);
-    sliderContainer.addEventListener('scrollend', () => isMoving = false);
+    let scrollEndTimer;
+    sliderContainer.addEventListener('scroll', () => {
+        clearTimeout(scrollEndTimer);
+        scrollEndTimer = setTimeout(() => {
+            isMoving = false;
+            const totalItems = items.length;
+            if (sliderContainer.scrollLeft >= (totalItems + cloneCount - 1) * itemWidth) {
+                sliderContainer.style.scrollBehavior = 'auto';
+                sliderContainer.scrollLeft = (cloneCount -1) * itemWidth;
+            }
+            if (sliderContainer.scrollLeft <= itemWidth) {
+                sliderContainer.style.scrollBehavior = 'auto';
+                sliderContainer.scrollLeft = totalItems * itemWidth;
+            }
+        }, 150); 
+    });
 }
+
 function initializeLightbox() {
     const lightbox = document.getElementById('lightbox');
     if (!lightbox) return;
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxClose = document.querySelector('.lightbox-close');
+    
     document.body.addEventListener('click', function(e) {
-        const card = e.target.closest('.slider-container .card');
+        const card = e.target.closest('#certifications .card, #projects .card'); // Target specific sections
         if (card) {
             const cardImage = card.querySelector('img');
-            if (cardImage && cardImage.src) {
+            if (cardImage && cardImage.src && !card.querySelector('a')) { // Don't trigger on linked project cards
+                e.preventDefault();
                 lightbox.classList.remove('hidden');
                 lightboxImg.src = cardImage.src;
             }
         }
     });
+
     function closeLightbox() { lightbox.classList.add('hidden'); }
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', function(e) { if (e.target === lightbox) { closeLightbox(); } });

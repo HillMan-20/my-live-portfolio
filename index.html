@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body id="page-home">
+
+    <header>
+        <div class="container header-content-wrapper">
+            <div class="logo"><a href="index.html">Portfolio</a></div>
+            <nav>
+                <a href="index.html" class="active">Home</a>
+                <a href="article.html">Article</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <main>
+        <section id="home">
+            <div id="hero-background-image-layer"></div>
+            <div class="hero-content">
+                <div class="photo-wrapper"><img id="profile-photo" src="" alt="Profile Photo"></div>
+                <div class="hero-text">
+                    <p class="intro-text">Hello, I'm</p>
+                    <h1 id="profile-name"></h1>
+                    <p id="profile-short-bio" class="subtitle"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="bio" class="content-section">
+            <div class="container">
+                <h2>About Me</h2>
+                <p id="short-bio-text" class="short-bio"></p>
+            </div>
+        </section>
+        
+        <section id="education" class="content-section">
+            <div class="container">
+                <h2>Education</h2>
+                <div id="education-timeline" class="timeline-container"></div>
+            </div>
+        </section>
+        
+        <section id="experience" class="content-section">
+            <div class="container">
+                <h2>Experience</h2>
+                <div id="experience-timeline" class="timeline-container"></div>
+            </div>
+        </section>
+
+        <section id="skills" class="content-section">
+            <div class="container">
+                <h2>My Skills</h2>
+                <div id="skills-container" class="card-container"></div>
+            </div>
+        </section>
+        
+        <section id="activity" class="content-section">
+            <div class="container">
+                <h2>Activity</h2>
+                <div class="slider-wrapper">
+                    <div id="activity-container" class="card-container slider-container"></div>
+                    <button class="slider-btn prev" data-target="activity-container">&lt;</button>
+                    <button class="slider-btn next" data-target="activity-container">&gt;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <div class="container">
+                <h2>Projects</h2>
+                <div class="slider-wrapper">
+                    <div id="projects-container" class="card-container slider-container"></div>
+                    <button class="slider-btn prev" data-target="projects-container">&lt;</button>
+                    <button class="slider-btn next" data-target="projects-container">&gt;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="certifications" class="content-section">
+            <div class="container">
+                <h2>Certifications</h2>
+                <div class="slider-wrapper">
+                    <div id="certifications-container" class="card-container slider-container"></div>
+                    <button class="slider-btn prev" data-target="certifications-container">&lt;</button>
+                    <button class="slider-btn next" data-target="certifications-container">&gt;</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container"><p>&copy; 2025. All rights reserved.</p></div>
+    </footer>
+
+    <div id="lightbox" class="hidden">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+
+/* Basic Reset & Dark Theme Setup */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: #121212;
+    color: #e0e0e0;
+    background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('images/code-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+img[src=""] {
+    background-color: #2a2a2a;
+    border: 1px dashed #555;
+    visibility: visible;
+}
+.photo-wrapper img[src=""] { min-height: 280px; }
+.card img[src=""] { min-height: 150px; }
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 100px;
+    box-sizing: border-box;
+}
+
+/* Header and Navigation */
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: rgba(18, 18, 18, 0.5);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+nav { display: flex; gap: 40px; }
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+nav a:hover, nav a.active { border-color: #ffffff; }
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    box-sizing: border-box;
+}
+.hamburger span { width: 100%; height: 3px; background-color: white; border-radius: 2px; }
+
+main { padding-top: 80px; }
+
+/* Hero Section */
+#home {
+    min-height: calc(100vh - 80px);
+    display: grid;
+    place-items: center;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+#hero-background-image-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    padding: 20px;
+    z-index: 2;
+    width: max-content;
+    box-sizing: border-box;
+}
+
+.photo-wrapper { position: relative; width: 240px; height: 280px; flex-shrink: 0; }
+#profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 4px solid rgb(0, 0, 0);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.photo-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    right: -25px;
+    width: 150px;
+    height: 150px;
+    background-image: url('images/decorative-pattern.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.hero-text .intro-text { font-size: 1.2rem; margin: 0; color: #bbbbbb; }
+.hero-text h1 { font-size: 3.5rem; font-weight: 700; margin: 0; line-height: 1.1; color: #fd3838; }
+.hero-text .subtitle { font-size: 1.2rem; font-weight: 300; margin: 10px 0 30px 0; color: #cccccc; }
+.short-bio { font-size: 1.2rem; font-weight: 300; margin: 0 0 100px; color: #cccccc; text-align: justify;}
+
+/* Social Media Icons */
+.social-icons { display: flex; gap: 15px; }
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #2a2a2a;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+.social-icons a:hover { transform: translateY(-5px); }
+.social-icons a img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Timeline Education & Experience */
+.timeline-container { position: relative; max-width: 800px; margin: 0 auto; padding: 0px 0; }
+.timeline-container::before { content: ''; position: absolute; top: 0; left: 20px; height: 100%; width: 4px; background-color: #ffffff; border-radius: 2px; }
+.timeline-item { padding: 10px 40px; position: relative; margin-left: 40px; width: 100%; box-sizing: border-box; }
+.timeline-item::before { content: ''; position: absolute; left: -28px; top: 22px; width: 20px; height: 20px; border-radius: 50%; background-color: #fd3838; border: 4px solid #ffffff; z-index: 1; }
+.timeline-content { padding: 20px 30px; background: rgba(40, 40, 40, 0.8); position: relative; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
+.timeline-content .date, .timeline-content .year { font-size: 0.8rem; font-weight: bold; color: #fd3838; margin-bottom: 5px; display: block; }
+.timeline-content h3 { margin-top: 0; margin-bottom: 5px; color: #ffffff; font-weight: 700; }
+.timeline-content .timeline-subtitle { display: block; font-style: italic; color: #ddd; margin-bottom: 10px; }
+.timeline-content p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #ccc; }
+
+/* Styling untuk Section Lainnya */
+.content-section { margin-bottom: 280px;}
+.content-section { margin-top: 80px; }
+.content-section h2 { text-align: center; font-size: 2.5rem; margin-bottom: 40px; color: #ffffff; }
+.card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+
+/* Style Kartu Default */
+.card { background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px; width: calc(33.333% - 20px); box-sizing: border-box; transition: transform 0.3s ease, box-shadow 0.3s ease; backdrop-filter: blur(5px); display: flex; flex-direction: column; }
+.card:hover {box-shadow: 10px 10px 5px #fd3838; }
+.card img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; margin-bottom: 15px; }
+.card h3 { margin-top: 0; margin-bottom: 10px; color: #ffffff; }
+.card p { color: #ccc; font-size: 0.9rem; flex-grow: 1; }
+
+/* Style Kartu Activity */
+.activity-details { margin-top: auto; padding-top: 15px; border-top: 1px solid #444; font-size: 0.8rem; color: #aaa; }
+.activity-details .role { font-weight: bold; color: #fff; display: block; margin-bottom: 5px; }
+/* Style Kartu Activity & Certification */
+.activity-details, .certification-details {
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #444;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+/* Membuat semua span di dalam detail menjadi block */
+.activity-details span, .certification-details span {
+    display: block;
+    margin-bottom: 5px;
+}
+.activity-details .role, .certification-details .issuer, .certification-details .role {
+    color: #fff;
+}
+
+/* Membuat kartu sertifikasi bisa di-klik */
+#certifications .card {
+    cursor: pointer;
+}
+
+/* Style Kartu Skill (Bulat) */
+#skills .card-container { gap: 40px; }
+.skill-item { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+.skill-icon-wrapper { width: 120px; height: 120px; background-color: #2a2a2a; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: transform 0.3s ease; }
+.skill-icon-wrapper:hover { transform: scale(1.1); background-color: #e0e0e0; }
+.skill-icon-wrapper img { width: 70%; height: 70%; object-fit: contain; }
+p.skill-name { margin: 0; font-size: 1rem; font-weight: 500; color: #e0e0e0; }
+
+#lightbox {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.4s ease;
+}
+#lightbox.hidden {
+    display: none;
+}
+.lightbox-content {
+    max-width: 90%;
+    max-height: 85%;
+    object-fit: contain;
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.lightbox-close:hover {
+    color: #bbb;
+}
+
+/* --- PERBAIKAN STYLE SLIDER DENGAN CSS SCROLL SNAP --- */
+/* --- STYLE UNTUK SLIDER --- */
+.slider-wrapper { position: relative; padding: 0 50px; }
+.slider-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 30px;
+    padding-bottom: 10px;
+    /* Menghapus scroll-snap untuk kontrol JS penuh */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.slider-container::-webkit-scrollbar { display: none; }
+.slider-container .card { flex: 0 0 calc(33.333% - 20px); }
+.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.2); border: none; color: white; font-size: 2rem; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10; transition: background-color 0.3s; display: flex; align-items: center; justify-content: center; }
+.slider-btn:hover { background-color: rgba(255, 255, 255, 0.5); }
+.slider-btn.prev { left: 0; }
+.slider-btn.next { right: 0; }
+.slider-btn.hidden { display: none; }
+/* --- AKHIR PERBAIKAN STYLE SLIDER --- */
+
+/* --- STYLE BARU UNTUK HALAMAN DETAIL ARTIKEL --- */
+.article-detail-container {
+    max-width: 1000px; /* Batasi lebar konten agar mudah dibaca */
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+#article-detail-title {
+    font-size: 2.8rem;
+    color: #fd3838;
+    margin: 0 0 0;
+}
+.article-detail-meta {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-bottom: 30px;
+}
+#article-detail-image {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+#article-detail-content {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+    text-align: justify;
+}
+#article-detail-content p {
+    margin-bottom: 1.5rem;
+}
+
+
+/* Contact Form */
+.contact-subtitle { text-align: center; margin-top: -30px; margin-bottom: 30px; font-size: 1.1rem; color: #ccc; }
+#contact-form { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; gap: 15px; }
+#contact-form input, #contact-form textarea { background: #2a2a2a; border: 1px solid #444; color: #fff; padding: 15px; border-radius: 5px; }
+#contact-form button { background: #fff; color: #121212; border: none; padding: 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; }
+#contact-form button:hover { background: #ccc; }
+
+/* Footer */
+footer { padding: 10px 0; background: #0a0a0a; text-align: center; color: #888; }
+
+/* --- Media Queries --- */
+@media (max-width: 1100px) {
+    .container { padding: 0 50px; }
+    .hero-text h1 { font-size: 2.8rem; }
+}
+@media (max-width: 910px) {
+    main { padding-top: 60px; }
+    header .container { height: 60px; }
+    .container { padding: 0 20px; }
+    nav { display: none; position: fixed; top: 0; right: -100%; width: 70%; height: 100vh; background: rgba(20, 20, 20, 0.98); flex-direction: column; justify-content: center; align-items: center; transition: right 0.5s ease-in-out; }
+    nav.nav-active { display: flex; right: 0; }
+    .hamburger { display: flex; }
+    
+    #home {
+        display: flex;
+        min-height: 0;
+        height: auto;
+        padding: 60px 0;
+        align-items: center;
+        justify-content: center;
+    }
+    .hero-content {
+        position: static;
+        transform: none;
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+        width: 100%;
+    }
+    .photo-wrapper { order: -1; }
+    .hero-text h1 { font-size: 2.8rem; }
+    .social-icons { justify-content: center; }
+    
+    .timeline-container::before { left: 10px; }
+    .timeline-item { margin-left: 20px; }
+    .timeline-item::before { left: -18px; }
+    .card { width: 100%; max-width: 400px; }
+    .skill-icon-wrapper { width: 100px; height: 100px; }
+}

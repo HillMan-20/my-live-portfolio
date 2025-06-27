@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Articles</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body id="admin-page-articles">
+    <h1>Admin Panel</h1>
+    <div class="admin-nav">
+        <a href="admin.html" class="admin-tab-btn">Home Page</a>
+        <a href="admin-article.html" class="admin-tab-btn active">Articles</a>
+        <a href="admin-contact.html" class="admin-tab-btn">Contact Page</a>
+    </div>
+
+    <div class="form-section">
+        <div class="section-header">
+            <h2>Manage Articles</h2>
+            <button class="add-btn" data-section="articles">+</button>
+        </div>
+        <div id="articles-admin-container"></div>
+        <button class="save-section-btn">Simpan Articles</button>
+    </div>
+
+    <div id="status-message"></div>
+    <script src="admin.js"></script>
+</body>
+</html>

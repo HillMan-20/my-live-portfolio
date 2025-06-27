@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Contact</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body id="admin-page-contact">
+    <h1>Admin Panel</h1>
+    <div class="admin-nav">
+        <a href="admin.html" class="admin-tab-btn">Home Page</a>
+        <a href="admin-article.html" class="admin-tab-btn">Articles</a>
+        <a href="admin-contact.html" class="admin-tab-btn active">Contact Page</a>
+    </div>
+
+    <div class="form-section">
+        <h2>Teks Halaman Kontak</h2>
+        <label for="contact-title-input">Judul Utama (e.g., Get in Touch)</label>
+        <input type="text" id="contact-title-input">
+        
+        <label for="contact-subtitle-input">Sub-judul (teks di bawah judul)</label>
+        <textarea id="contact-subtitle-input" rows="3"></textarea>
+        
+        <hr>
+        <h3>Teks Formulir</h3>
+        <label for="contact-placeholder-name">Placeholder untuk Nama</label>
+        <input type="text" id="contact-placeholder-name">
+        
+        <label for="contact-placeholder-email">Placeholder untuk Email</label>
+        <input type="text" id="contact-placeholder-email">
+
+        <label for="contact-placeholder-message">Placeholder untuk Pesan</label>
+        <input type="text" id="contact-placeholder-message">
+        
+        <label for="contact-button-text">Teks Tombol Kirim</label>
+        <input type="text" id="contact-button-text">
+
+        <button class="save-section-btn">Simpan Teks Halaman</button>
+    </div>
+
+    <div class="form-section">
+        <div class="section-header">
+            <h2>Manage Social Media</h2>
+            <button class="add-btn" data-section="socialMedia">+</button>
+        </div>
+        <div id="socialMedia-admin-container"></div>
+        <button class="save-section-btn">Simpan Social Media</button>
+    </div>
+
+    <div id="status-message"></div>
+    <script src="admin.js"></script>
+</body>
+</html>

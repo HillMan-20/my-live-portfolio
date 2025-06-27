@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Me - My Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body id="page-contact">
+
+    <header>
+        <div class="container header-content-wrapper">
+            <div class="logo"><a href="index.html">Portfolio</a></div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="article.html">Article</a>
+                <a href="contact.html" class="active">Contact</a>
+            </nav>
+            <button class="hamburger"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <main>
+        <section class="content-section">
+            <div class="container">
+                <h2 id="contact-title">Get in Touch</h2>
+                <p id="contact-subtitle" class="contact-subtitle">Hubungi saya melalui sosial media di bawah ini atau kirimkan pesan langsung.</p>
+                
+                <div id="contact-social-media" class="social-icons-contact"></div>
+
+                <form id="contact-form" action="https://formspree.io/f/xrbkorbp" method="POST">
+                    <input type="text" name="name" id="form-name" placeholder="Nama Anda" required>
+                    <input type="email" name="email" id="form-email" placeholder="Email Anda" required>
+                    <textarea name="message" id="form-message" placeholder="Pesan Anda" rows="5" required></textarea>
+                    <button type="submit" id="form-submit-btn">Kirim Pesan</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

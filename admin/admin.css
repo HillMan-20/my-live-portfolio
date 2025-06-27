@@ -1,0 +1,36 @@
+body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; max-width: 800px; margin: 20px auto; }
+h1, h2 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+
+/* Admin Nav */
+.admin-nav { display: flex; gap: 5px; margin-bottom: 20px; background-color: #e9ecef; padding: 5px; border-radius: 8px; }
+.admin-tab-btn { flex-grow: 1; padding: 10px 15px; cursor: pointer; border: none; background-color: transparent; font-size: 1rem; font-weight: bold; color: #495057; border-radius: 5px; transition: background-color 0.3s, color 0.3s; text-decoration: none; text-align: center; }
+.admin-tab-btn:hover { background-color: #dee2e6; }
+.admin-tab-btn.active { background-color: #fff; color: #007bff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+.form-section { background: #fff; padding: 20px; margin-bottom: 40px; border-radius: 8px; border: 1px solid #ddd; }
+.section-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; margin-bottom: 15px; }
+.section-header h2 { border-bottom: none; margin: 0; padding-bottom: 10px; }
+.section-header div { display: flex; gap: 10px; }
+label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; }
+input[type="text"], textarea, input[type="file"] { width: 100%; padding: 10px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+textarea { height: 80px; resize: vertical; }
+.dynamic-item { border: 1px solid #ddd; background-color: #f9f9f9; padding: 15px; margin-top: 15px; border-radius: 5px; position: relative; }
+.item-view { display: flex; justify-content: space-between; align-items: center; }
+.item-view h4 { margin: 0; font-size: 1.1rem; color: #333; }
+.item-controls { display: flex; gap: 10px; }
+.item-form { display: none; border-top: 1px dashed #ccc; margin-top: 15px; padding-top: 15px; }
+.dynamic-item.editing .item-view { display: none; }
+.dynamic-item.editing .item-form { display: block; }
+.edit-item-btn, .close-edit-btn { background-color: #555; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.edit-item-btn:hover, .close-edit-btn:hover { background-color: #333; }
+.close-edit-btn { margin-top: 15px; }
+.remove-btn { background: #e74c3c; color: white; border: none; cursor: pointer; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; }
+.remove-btn:hover { background: #c0392b; }
+.save-section-btn { background: #28a745; color: white; padding: 10px 25px; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; display: block; width: 100%; margin-top: 20px; text-align: center; }
+.save-section-btn:hover { background: #218838; }
+.add-btn { background: #007bff; color: white; border: none; width: 40px; height: 40px; border-radius: 5px; font-size: 24px; font-weight: bold; line-height: 40px; text-align: center; cursor: pointer; padding: 0; }
+.add-btn:hover { background: #0069d9; }
+.delete-section-btn { background-color: #dc3545; color: white; border: none; padding: 0 15px; height: 40px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+.delete-section-btn:hover { background-color: #c82333; }
+#status-message { margin-top: 20px; font-weight: bold; text-align: center; }
+img[src=""] { display: none; }

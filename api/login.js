@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken');
 module.exports = async (req, res) => {
     // --- DATA KONFIGURASI MANUAL UNTUK TES ---
     // Salin-tempel nilai dari file .env.local Anda ke sini:
-    const adminUsername = "admin";
-    const adminPasswordHash = "$2b$10$ExGWZ0Y1UrPmvRJKL/we/edySyHTjE6w8N9PXaeV6eiR0XLNOgKYO";
-    const jwtSecret = "KampusDompakDiUjungDompakKampusSenggarangDiUjungSenggarang234";
+    const adminUsername = process.env.ADMIN_USERNAME; 
+    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH; 
+    const jwtSecret = process.env.JWT_SECRET;
     // -------------------------------------------
 
     if (req.method !== 'POST') {

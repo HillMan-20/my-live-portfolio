@@ -1,5 +1,8 @@
 // api/data.js (VERSI OPTIMASI)
-require('dotenv').config();
+if (!process.env.VERCEL) {
+  require('dotenv').config({ path: require('path').resolve(__dirname, '../.env.local') });
+}
+
 const { db } = require('@vercel/postgres');
 const jwt = require('jsonwebtoken');
 
@@ -14,7 +17,7 @@ module.exports = async (req, res) => {
         }
 
         const token = authHeader.split(' ')[1];
-        const jwtSecret = "KampusDompakDiUjungDompakKampusSenggarangDiUjungSenggarang234"; 
+        const jwtSecret = process.env.JWT_SECRET; 
 
         try {
             jwt.verify(token, jwtSecret);

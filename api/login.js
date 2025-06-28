@@ -1,5 +1,8 @@
 // api/login.js (VERSI DEBUGGING DENGAN NILAI LANGSUNG)
-require('dotenv').config(); // Biarkan ini untuk konsistensi
+if (!process.env.VERCEL) {
+    require('dotenv').config({ path: require('path').resolve(__dirname, '../.env.local') });
+}
+ // Biarkan ini untuk konsistensi
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -10,6 +13,7 @@ module.exports = async (req, res) => {
     const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH; 
     const jwtSecret = process.env.JWT_SECRET;
     // -------------------------------------------
+    
 
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });

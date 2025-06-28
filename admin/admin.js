@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         renderPageContent();
         setTimeout(() => { statusMessage.textContent = ''; }, 2000);
+        
     }
     
     async function saveData() {
@@ -220,52 +221,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         // --- BAGIAN UNTUK DYNAMIC SECTIONS (Educations, Skills, Articles, dll.) ---
-        activePageElement.querySelectorAll('.dynamic-item').forEach(itemDiv => {
-            const itemIndex = Array.from(itemDiv.parentNode.children).indexOf(itemDiv); // Mendapatkan indeks item
-            // Ambil sectionKey dari elemen input di dalam itemDiv
-            const sectionKey = itemDiv.querySelector('[data-section]')?.dataset.section;
-            if (!sectionKey) return;
-    
-            const parentKey = getParentKey(sectionKey);
-            const targetArray = parentKey ? newData[parentKey][sectionKey] : newData[sectionKey];
-    
-            // Pastikan item yang sedang diedit/dihapus masih ada di newData
-            if (!targetArray || targetArray[itemIndex] === undefined) return; 
-    
-            // Handle text/textarea inputs
-            itemDiv.querySelectorAll('.admin-input-text').forEach(input => {
-                const key = input.dataset.key;
-                targetArray[itemIndex][key] = input.value;
-            });
-    
-            // Handle file inputs (upload to Cloudinary)
-            itemDiv.querySelectorAll('.admin-input-file').forEach(input => {
-                const key = input.dataset.key; // Nama kunci (misal: 'image', 'logoImage')
-                const file = input.files[0];
-                // Ambil URL gambar yang saat ini ada di objek newData
-                const currentImageUrl = targetArray[itemIndex][key]; 
-    
-                if (file) {
-                    // Jika ada file baru yang diunggah, tambahkan promise upload
-                    fileUploadPromises.push(uploadImageToCloudinary(file).then(url => {
-                        if (url) {
-                            targetArray[itemIndex][key] = url;
-                        } else {
-                            targetArray[itemIndex][key] = currentImageUrl; // Jika upload gagal, pakai yang lama
-                        }
-                    }).catch(e => {
-                        console.error(`Failed to upload image for ${sectionKey} item ${itemIndex} key ${key}:`, e);
-                        targetArray[itemIndex][key] = currentImageUrl; // Fallback ke URL lama jika upload gagal
-                    }));
-                } else if (!file && input.value === '' && currentImageUrl) {
-                    // Jika input file dikosongkan dan sebelumnya ada gambar (berarti ingin menghapus gambar)
-                    targetArray[itemIndex][key] = ''; // Kosongkan URL gambar
-                } else {
-                    // Jika tidak ada file baru dan input tidak dikosongkan, pertahankan URL lama
-                    targetArray[itemIndex][key] = currentImageUrl;
-                }
-            });
+        const dynamicSectionsToProcess = ['educations', 'experiences', 'skills', 'activities', 'projects', 'certifications', 'articles', 'socialMedia']; // Tambahkan semua kunci section dinamis Anda
+
+for (const sectionKey of dynamicSectionsToProcess) {
+    const container = document.getElementById(`${sectionKey}-admin-container`);
+    if (!container) continue;
+
+    const parentKey = getParentKey(sectionKey);
+    // Inisialisasi array kosong untuk menampung data yang baru digabungkan dari form
+    let newItemsForSection = []; 
+
+    const itemDivs = container.querySelectorAll('.dynamic-item');
+    for (let i = 0; i < itemDivs.length; i++) {
+        const itemDiv = itemDivs[i];
+        const originalItem = parentKey ? currentData[parentKey][sectionKey][i] : currentData[sectionKey][i];
+        // Buat salinan item atau objek baru berdasarkan template jika ini item baru
+        let itemData = originalItem ? JSON.parse(JSON.stringify(originalItem)) : JSON.parse(JSON.stringify(itemTemplates[sectionKey]));
+
+        // Handle text/textarea inputs
+        itemDiv.querySelectorAll('.admin-input-text').forEach(input => {
+            const key = input.dataset.key;
+            itemData[key] = input.value;
         });
+
+        // Handle file inputs (upload to Cloudinary)
+        const fileInputs = itemDiv.querySelectorAll('.admin-input-file');
+        for (const input of fileInputs) {
+            const key = input.dataset.key;
+            const file = input.files[0];
+            const currentImageUrl = itemData[key]; // URL gambar yang sudah ada di itemData
+
+            if (file) {
+                fileUploadPromises.push(uploadImageToCloudinary(file).then(url => {
+                    if (url) {
+                        itemData[key] = url;
+                    } else {
+                        itemData[key] = currentImageUrl; // Fallback ke URL lama jika upload gagal
+                    }
+                }).catch(e => {
+                    console.error(`Failed to upload image for ${sectionKey} item ${i} key ${key}:`, e);
+                    itemData[key] = currentImageUrl; // Fallback ke URL lama jika upload gagal
+                }));
+            } else if (!file && input.value === '' && currentImageUrl) {
+                // Jika input file dikosongkan dan sebelumnya ada gambar (berarti ingin menghapus gambar)
+                itemData[key] = ''; // Kosongkan URL gambar
+            } else {
+                // Jika tidak ada file baru dan input tidak dikosongkan, pertahankan URL lama
+                itemData[key] = currentImageUrl;
+            }
+        }
+        newItemsForSection.push(itemData); // Tambahkan item yang sudah diproses ke array baru
+    }
+    // Perbarui newData dengan array item yang baru digabungkan
+    if (parentKey) {
+        if (!newData[parentKey]) newData[parentKey] = {};
+        newData[parentKey][sectionKey] = newItemsForSection;
+    } else {
+        newData[sectionKey] = newItemsForSection;
+    }
+}
     
         // Tunggu hingga semua operasi upload gambar selesai
         await Promise.all(fileUploadPromises);

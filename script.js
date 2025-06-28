@@ -109,7 +109,6 @@ async function handleInitialPageLoad() {
              renderContentForPage(document.body.id, portfolioDataCache);
         }
     }
-
     updateActiveNavLink();
 }
 // Render konten halaman berdasarkan ID

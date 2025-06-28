@@ -157,22 +157,59 @@ document.addEventListener('DOMContentLoaded', () => {
     async function gatherDataFromForm() {
         const pageId = document.body.id;
         const activePageElement = document.getElementById(pageId);
-        const newData = JSON.parse(JSON.stringify(currentData));
-
+        // Buat salinan dalam dari currentData untuk bekerja, agar tidak memodifikasi yang asli
+        const newData = JSON.parse(JSON.stringify(currentData)); 
+    
+        const fileUploadPromises = []; // Array untuk menampung semua promise upload gambar
+    
         if (pageId === 'admin-page-home') {
             const homeData = newData.home;
+    
+            // --- Penanganan Hero Background Image ---
             const heroBgFile = activePageElement.querySelector('#admin-heroBgFile').files[0];
-            const heroBgUrl = activePageElement.querySelector('#admin-heroBgUrl').value;
-            if (heroBgFile) homeData.heroBackgroundImage = await toBase64(heroBgFile);
-            else if (heroBgUrl || heroBgUrl === '') homeData.heroBackgroundImage = heroBgUrl;
-            
-            const profilePhotoFile = activePageElement.querySelector('#admin-profilePhotoInput').files[0];
-            if (profilePhotoFile) homeData.profilePhoto = await toBase64(profilePhotoFile);
-            
+            const heroBgUrlInput = activePageElement.querySelector('#admin-heroBgUrl').value;
+            const currentHeroBg = currentData.home.heroBackgroundImage; // Ambil URL yang sudah ada
+    
+            if (heroBgFile) {
+                // Jika ada file baru diunggah, tambahkan promise upload
+                fileUploadPromises.push(uploadImageToCloudinary(heroBgFile).then(url => {
+                    homeData.heroBackgroundImage = url;
+                }).catch(e => {
+                    console.error("Failed to upload hero background image:", e);
+                    homeData.heroBackgroundImage = currentHeroBg; // Fallback ke URL lama jika gagal
+                }));
+            } else if (heroBgUrlInput && heroBgUrlInput !== currentHeroBg) {
+                // Jika URL diinput berubah (dan bukan upload file), gunakan yang baru
+                homeData.heroBackgroundImage = heroBgUrlInput;
+            } else {
+                // Jika tidak ada file baru atau URL input tidak berubah, pertahankan yang lama
+                homeData.heroBackgroundImage = currentHeroBg;
+            }
+    
+            // --- Penanganan Profile Photo ---
+            const profilePhotoInput = activePageElement.querySelector('#admin-profilePhotoInput');
+            const profilePhotoFile = profilePhotoInput.files[0];
+            const currentProfilePhoto = currentData.home.profilePhoto; // Ambil URL yang sudah ada
+    
+            if (profilePhotoFile) {
+                // Jika ada file baru diunggah, tambahkan promise upload
+                fileUploadPromises.push(uploadImageToCloudinary(profilePhotoFile).then(url => {
+                    homeData.profilePhoto = url;
+                }).catch(e => {
+                    console.error("Failed to upload profile photo:", e);
+                    homeData.profilePhoto = currentProfilePhoto; // Fallback ke URL lama jika gagal
+                }));
+            } else {
+                // Jika tidak ada file baru, pertahankan yang lama
+                homeData.profilePhoto = currentProfilePhoto;
+            }
+    
             homeData.profileName = activePageElement.querySelector('#admin-profileName').value;
             homeData.profileBio = activePageElement.querySelector('#admin-profileBio').value;
             homeData.shortBio = activePageElement.querySelector('#admin-shortBio').value;
-        } else if (pageId === 'admin-page-contact') {
+        } 
+    
+        else if (pageId === 'admin-page-contact') {
             const contactData = newData.contact;
             contactData.title = activePageElement.querySelector('#contact-title-input').value;
             contactData.subtitle = activePageElement.querySelector('#contact-subtitle-input').value;
@@ -181,35 +218,137 @@ document.addEventListener('DOMContentLoaded', () => {
             contactData.placeholderMessage = activePageElement.querySelector('#contact-placeholder-message').value;
             contactData.buttonText = activePageElement.querySelector('#contact-button-text').value;
         }
-        
-        activePageElement.querySelectorAll('.admin-input-text, textarea.admin-input-text').forEach(input => {
-            const { section, index, key } = input.dataset;
-            const parentKey = getParentKey(section);
-            const targetArray = parentKey ? newData[parentKey][section] : newData[section];
-            if (targetArray && targetArray[index] !== undefined) targetArray[index][key] = input.value;
+    
+        // --- BAGIAN UNTUK DYNAMIC SECTIONS (Educations, Skills, Articles, dll.) ---
+        activePageElement.querySelectorAll('.dynamic-item').forEach(itemDiv => {
+            const itemIndex = Array.from(itemDiv.parentNode.children).indexOf(itemDiv); // Mendapatkan indeks item
+            // Ambil sectionKey dari elemen input di dalam itemDiv
+            const sectionKey = itemDiv.querySelector('[data-section]')?.dataset.section;
+            if (!sectionKey) return;
+    
+            const parentKey = getParentKey(sectionKey);
+            const targetArray = parentKey ? newData[parentKey][sectionKey] : newData[sectionKey];
+    
+            // Pastikan item yang sedang diedit/dihapus masih ada di newData
+            if (!targetArray || targetArray[itemIndex] === undefined) return; 
+    
+            // Handle text/textarea inputs
+            itemDiv.querySelectorAll('.admin-input-text').forEach(input => {
+                const key = input.dataset.key;
+                targetArray[itemIndex][key] = input.value;
+            });
+    
+            // Handle file inputs (upload to Cloudinary)
+            itemDiv.querySelectorAll('.admin-input-file').forEach(input => {
+                const key = input.dataset.key; // Nama kunci (misal: 'image', 'logoImage')
+                const file = input.files[0];
+                // Ambil URL gambar yang saat ini ada di objek newData
+                const currentImageUrl = targetArray[itemIndex][key]; 
+    
+                if (file) {
+                    // Jika ada file baru yang diunggah, tambahkan promise upload
+                    fileUploadPromises.push(uploadImageToCloudinary(file).then(url => {
+                        if (url) {
+                            targetArray[itemIndex][key] = url;
+                        } else {
+                            targetArray[itemIndex][key] = currentImageUrl; // Jika upload gagal, pakai yang lama
+                        }
+                    }).catch(e => {
+                        console.error(`Failed to upload image for ${sectionKey} item ${itemIndex} key ${key}:`, e);
+                        targetArray[itemIndex][key] = currentImageUrl; // Fallback ke URL lama jika upload gagal
+                    }));
+                } else if (!file && input.value === '' && currentImageUrl) {
+                    // Jika input file dikosongkan dan sebelumnya ada gambar (berarti ingin menghapus gambar)
+                    targetArray[itemIndex][key] = ''; // Kosongkan URL gambar
+                } else {
+                    // Jika tidak ada file baru dan input tidak dikosongkan, pertahankan URL lama
+                    targetArray[itemIndex][key] = currentImageUrl;
+                }
+            });
         });
-
-        const filePromises = Array.from(activePageElement.querySelectorAll('.admin-input-file')).map(input => {
-            const { section, index, key } = input.dataset;
-            const parentKey = getParentKey(section);
-            const targetArray = parentKey ? newData[parentKey][section] : newData[section];
-            const file = input.files[0];
-            if (file && targetArray && targetArray[index] !== undefined) {
-                return toBase64(file).then(base64 => { if (base64) targetArray[index][key] = base64; });
-            }
-            return Promise.resolve();
-        });
-        await Promise.all(filePromises);
-        currentData = newData;
+    
+        // Tunggu hingga semua operasi upload gambar selesai
+        await Promise.all(fileUploadPromises);
+        currentData = newData; // Perbarui currentData dengan newData yang sudah diisi URL
     }
     
-    const toBase64 = file => new Promise((resolve, reject) => {
-        if (!file) { resolve(null); return; }
+
+async function uploadImageToCloudinary(file) {
+    if (!file) {
+        console.warn("No file provided for uploadImageToCloudinary.");
+        return null; // Mengembalikan null jika tidak ada file
+    }
+
+    const statusMessage = document.getElementById('status-message'); // Ambil elemen status message
+    const originalStatusText = statusMessage ? statusMessage.textContent : '';
+
+    try {
+        // Tampilkan pesan loading sementara
+        if (statusMessage) {
+            statusMessage.textContent = 'Mengunggah gambar...';
+            statusMessage.style.color = 'blue';
+        }
+
         const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
+        return new Promise((resolve, reject) => {
+            reader.onload = async (e) => {
+                const imageBase64 = e.target.result; // Ini adalah Base64 string dari file lokal
+
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    if (!token) throw new Error("Sesi tidak valid untuk upload gambar. Silakan login ulang.");
+
+                    const response = await fetch('/api/upload-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ imageBase64 })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Gagal mengunggah gambar ke Cloudinary.');
+                    }
+
+                    const data = await response.json();
+                    if (statusMessage) { // Sembunyikan pesan loading
+                        statusMessage.textContent = originalStatusText; // Kembalikan ke teks semula atau kosongkan
+                        statusMessage.style.color = '';
+                    }
+                    resolve(data.url); // Mengembalikan URL publik gambar dari Cloudinary
+                } catch (error) {
+                    console.error('Error during image upload fetch:', error);
+                    if (statusMessage) { // Tampilkan error
+                        statusMessage.textContent = `Upload gambar gagal: ${error.message}`;
+                        statusMessage.style.color = 'red';
+                        setTimeout(() => { statusMessage.textContent = originalStatusText; statusMessage.style.color = ''; }, 5000);
+                    }
+                    reject(error);
+                }
+            };
+            reader.onerror = error => {
+                console.error('FileReader error:', error);
+                if (statusMessage) {
+                    statusMessage.textContent = `Pembacaan file gagal: ${error.message}`;
+                    statusMessage.style.color = 'red';
+                    setTimeout(() => { statusMessage.textContent = originalStatusText; statusMessage.style.color = ''; }, 5000);
+                }
+                reject(error);
+            };
+            reader.readAsDataURL(file); // Memulai pembacaan file sebagai Base64
+        });
+    } catch (initialError) {
+        console.error('Initial error in uploadImageToCloudinary:', initialError);
+        if (statusMessage) {
+            statusMessage.textContent = `Upload gambar gagal total: ${initialError.message}`;
+            statusMessage.style.color = 'red';
+            setTimeout(() => { statusMessage.textContent = originalStatusText; statusMessage.style.color = ''; }, 5000);
+        }
+        return null; // Pastikan mengembalikan null atau me-reject jika ada error awal
+    }
+}
 
     function getSingularName(key) {
         const map = { 'educations': 'Education', 'experiences': 'Experience', 'skills': 'Skill', 'activities': 'Activity', 'projects': 'Project', 'articles': 'Article', 'socialMedia': 'Social Media', 'certifications': 'Certification' };

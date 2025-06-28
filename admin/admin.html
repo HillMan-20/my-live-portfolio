@@ -7,40 +7,85 @@
     <link rel="stylesheet" href="admin.css">
 </head>
 <body id="admin-page-home">
-    <h1>Admin Panel</h1>
-    <div class="admin-nav">
-        <a href="admin.html" class="admin-tab-btn active">Home Page</a>
-        <a href="admin-article.html" class="admin-tab-btn">Articles</a>
-        <a href="admin-contact.html" class="admin-tab-btn">Contact Page</a>
+
+    <div id="login-container">
+        <div class="form-section" style="max-width: 400px; margin: 100px auto;">
+            <h2>Admin Login</h2>
+            <form id="login-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" required autocomplete="username">
+                <label for="password">Password</label>
+                <input type="password" id="password" required autocomplete="current-password">
+                <button type="submit" class="save-section-btn">Log In</button>
+                <p id="login-error" style="color: red; text-align: center; margin-top: 10px;"></p>
+            </form>
+        </div>
     </div>
 
-    <div class="form-section">
-        <h2>Home: Hero & Bio</h2>
-        <label for="admin-heroBgUrl">Latar Belakang Hero (via Link Internet):</label>
-        <input type="text" id="admin-heroBgUrl" placeholder="https://example.com/image.jpg">
-        <label for="admin-heroBgFile">Latar Belakang Hero (via File Lokal):</label>
-        <input type="file" id="admin-heroBgFile" accept="image/*">
-        <hr>
-        <label for="admin-profileName">Nama:</label>
-        <input type="text" id="admin-profileName">
-        <label for="admin-profileBio">Profesi (di bawah nama):</label>
-        <input type="text" id="admin-profileBio">
-        <label for="admin-shortBio">Bio Singkat (di bawah hero):</label>
-        <textarea id="admin-shortBio" rows="4"></textarea>
-        <label for="admin-profilePhotoInput">Foto Profil:</label>
-        <input type="file" id="admin-profilePhotoInput" accept="image/*">
-        <p>Preview:</p>
-        <img id="profilePhotoPreview" src="" alt="Preview" width="100">
-        <button class="save-section-btn">Simpan Home & Bio</button>
+    <div id="main-content" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; margin-bottom: 20px;">
+            <h1>Admin Panel</h1>
+            <button id="logout-btn" class="delete-section-btn">Logout</button>
+        </div>
+        <div class="admin-nav">
+            <a href="admin.html" class="admin-tab-btn active">Home Page</a>
+            <a href="admin-article.html" class="admin-tab-btn">Articles</a>
+            <a href="admin-contact.html" class="admin-tab-btn">Contact Page</a>
+        </div>
+
+        <div class="form-section">
+            <h2>Home: Hero & Bio</h2>
+            <label for="admin-heroBgUrl">Latar Belakang Hero (via Link Internet):</label>
+            <input type="text" id="admin-heroBgUrl" placeholder="https://example.com/image.jpg">
+            <label for="admin-heroBgFile">Latar Belakang Hero (via File Lokal):</label>
+            <input type="file" id="admin-heroBgFile" accept="image/*">
+            <hr>
+            <label for="admin-profileName">Nama:</label>
+            <input type="text" id="admin-profileName">
+            <label for="admin-profileBio">Profesi (di bawah nama):</label>
+            <input type="text" id="admin-profileBio">
+            <label for="admin-shortBio">Bio Singkat (di bawah hero):</label>
+            <textarea id="admin-shortBio" rows="4"></textarea>
+            <label for="admin-profilePhotoInput">Foto Profil:</label>
+            <input type="file" id="admin-profilePhotoInput" accept="image/*">
+            <p>Preview:</p>
+            <img id="profilePhotoPreview" src="" alt="Preview" width="100">
+            <button class="save-section-btn" data-section-group="home-bio">Simpan Home & Bio</button>
+        </div>
+        <div class="form-section">
+            <div class="section-header"><h2>Education</h2><div><button class="add-btn" data-section="educations">+</button></div></div>
+            <div id="educations-admin-container"></div>
+            <button class="save-section-btn" data-section-group="educations">Simpan Education</button>
+        </div>
+        <div class="form-section">
+            <div class="section-header"><h2>Experience</h2><div><button class="add-btn" data-section="experiences">+</button></div></div>
+            <div id="experiences-admin-container"></div>
+            <button class="save-section-btn" data-section-group="experiences">Simpan Experience</button>
+        </div>
+        <div class="form-section">
+            <div class="section-header"><h2>Skills</h2><div><button class="add-btn" data-section="skills">+</button></div></div>
+            <div id="skills-admin-container"></div>
+            <button class="save-section-btn" data-section-group="skills">Simpan Skills</button>
+        </div>
+        <div class="form-section">
+            <div class="section-header"><h2>Activity</h2><div><button class="add-btn" data-section="activities">+</button></div></div>
+            <div id="activities-admin-container"></div>
+            <button class="save-section-btn" data-section-group="activities">Simpan Activity</button>
+        </div>
+        <div class="form-section">
+            <div class="section-header"><h2>Projects</h2><div><button class="add-btn" data-section="projects">+</button></div></div>
+            <div id="projects-admin-container"></div>
+            <button class="save-section-btn" data-section-group="projects">Simpan Projects</button>
+        </div>
+        <div class="form-section">
+            <div class="section-header"><h2>Certifications</h2><div><button class="add-btn" data-section="certifications">+</button></div></div>
+            <div id="certifications-admin-container"></div>
+            <button class="save-section-btn" data-section-group="certifications">Simpan Certifications</button>
+        </div>
+        
+        <div id="status-message"></div>
     </div>
-    <div class="form-section"><div class="section-header"><h2>Education</h2><div><button class="add-btn" data-section="educations">+</button><button class="delete-section-btn" data-section="educations">Hapus Section</button></div></div><div id="educations-admin-container"></div><button class="save-section-btn">Simpan Education</button></div>
-    <div class="form-section"><div class="section-header"><h2>Experience</h2><div><button class="add-btn" data-section="experiences">+</button><button class="delete-section-btn" data-section="experiences">Hapus Section</button></div></div><div id="experiences-admin-container"></div><button class="save-section-btn">Simpan Experience</button></div>
-    <div class="form-section"><div class="section-header"><h2>Skills</h2><div><button class="add-btn" data-section="skills">+</button><button class="delete-section-btn" data-section="skills">Hapus Section</button></div></div><div id="skills-admin-container"></div><button class="save-section-btn">Simpan Skills</button></div>
-    <div class="form-section"><div class="section-header"><h2>Activity</h2><div><button class="add-btn" data-section="activities">+</button><button class="delete-section-btn" data-section="activities">Hapus Section</button></div></div><div id="activities-admin-container"></div><button class="save-section-btn">Simpan Activity</button></div>
-    <div class="form-section"><div class="section-header"><h2>Projects</h2><div><button class="add-btn" data-section="projects">+</button><button class="delete-section-btn" data-section="projects">Hapus Section</button></div></div><div id="projects-admin-container"></div><button class="save-section-btn">Simpan Projects</button></div>
-    <div class="form-section"><div class="section-header"><h2>Certifications</h2><div><button class="add-btn" data-section="certifications">+</button><button class="delete-section-btn" data-section="certifications">Hapus Section</button></div></div><div id="certifications-admin-container"></div><button class="save-section-btn">Simpan Certifications</button></div>
     
-    <div id="status-message"></div>
     <script src="admin.js"></script>
 </body>
 </html>

@@ -1,94 +1,132 @@
-// admin.js
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Variabel global untuk menyimpan data yang sedang diedit
+    // --- BAGIAN BARU: Manajemen Elemen & Variabel Login ---
+    const loginContainer = document.getElementById('login-container');
+    const mainContent = document.getElementById('main-content');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const logoutBtn = document.getElementById('logout-btn');
     let currentData;
 
-    // Struktur data default jika database kosong
-    const defaultData = {
-        home: {
-            heroBackgroundImage: '', profilePhoto: '', profileName: '', profileBio: '', shortBio: '',
-            educations: [], experiences: [], skills: [], activities: [], projects: [], certifications: []
-        },
-        articles: [],
-        contact: {
-            title: "Get in Touch", subtitle: "Hubungi saya melalui sosial media di bawah ini atau kirimkan pesan langsung.",
-            placeholderName: "Nama Anda", placeholderEmail: "Email Anda", placeholderMessage: "Pesan Anda", buttonText: "Kirim Pesan",
-            socialMedia: []
-        }
-    };
+    // --- BAGIAN BARU: Logika Login & Tampilan ---
     
-    // --- FUNGSI UTAMA YANG DIUBAH ---
+    function showMainContentAndLoadData() {
+        if (loginContainer) loginContainer.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+        loadDataForEditing();
+    }
 
-    // FUNGSI BARU: Memuat data dari server saat halaman dibuka
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+        showMainContentAndLoadData();
+    } else {
+        if (loginContainer) loginContainer.style.display = 'block';
+        if (mainContent) mainContent.style.display = 'none';
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(loginError) loginError.textContent = '';
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Username atau password salah.');
+                }
+                
+                const data = await response.json();
+                localStorage.setItem('adminToken', data.token);
+                showMainContentAndLoadData();
+
+            } catch (err) {
+                if(loginError) loginError.textContent = err.message;
+            }
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('Anda yakin ingin logout?')) {
+                localStorage.removeItem('adminToken');
+                location.reload();
+            }
+        });
+    }
+
+    // --- KODE LAMA ANDA UNTUK MENGELOLA KONTEN (DENGAN MODIFIKASI) ---
+
+    const defaultData = {
+        home: { heroBackgroundImage: '', profilePhoto: '', profileName: '', profileBio: '', shortBio: '', educations: [], experiences: [], skills: [], activities: [], projects: [], certifications: [] },
+        articles: [],
+        contact: { title: "Get in Touch", subtitle: "Hubungi saya melalui sosial media di bawah ini atau kirimkan pesan langsung.", placeholderName: "Nama Anda", placeholderEmail: "Email Anda", placeholderMessage: "Pesan Anda", buttonText: "Kirim Pesan", socialMedia: [] }
+    };
+
     async function loadDataForEditing() {
         const statusMessage = document.getElementById('status-message');
+        if (!statusMessage) return;
         statusMessage.textContent = 'Memuat data dari server...';
         statusMessage.style.color = 'orange';
 
         try {
-            // Panggil API kita untuk mendapatkan data terbaru dari database
             const response = await fetch('/api/data');
-            if (!response.ok) throw new Error(`Gagal mengambil data dari server. Status: ${response.status}`);
+            if (!response.ok) throw new Error(`Gagal mengambil data. Status: ${response.status}`);
             
             const dataFromServer = await response.json();
-
-            // Jika data dari server kosong atau tidak valid, gunakan data default
-            if (dataFromServer && Object.keys(dataFromServer).length > 0) {
-                currentData = dataFromServer;
-            } else {
-                currentData = JSON.parse(JSON.stringify(defaultData));
-            }
+            currentData = (dataFromServer && Object.keys(dataFromServer).length > 0) ? dataFromServer : JSON.parse(JSON.stringify(defaultData));
+            
             statusMessage.textContent = 'Data berhasil dimuat.';
             statusMessage.style.color = 'green';
-
         } catch (error) {
             console.error('Gagal memuat data:', error);
             statusMessage.textContent = `Gagal memuat data! Error: ${error.message}`;
             statusMessage.style.color = 'red';
-            // Jika terjadi error, gunakan data default agar halaman tidak rusak
             currentData = JSON.parse(JSON.stringify(defaultData));
         }
         
-        // Setelah data didapat, render ke dalam form
         renderPageContent();
         setTimeout(() => { statusMessage.textContent = ''; }, 2000);
     }
-
-    // FUNGSI BARU: Menyimpan data ke server
+    
     async function saveData() {
         const statusMessage = document.getElementById('status-message');
         statusMessage.textContent = 'Menyimpan data ke server...';
         statusMessage.style.color = 'orange';
 
         try {
-            // Kumpulkan semua data dari form ke dalam objek 'currentData'
             await gatherDataFromForm();
+            const token = localStorage.getItem('adminToken');
+            if (!token) throw new Error("Sesi tidak valid. Silakan login ulang.");
 
-            // Kirim data terbaru ke server menggunakan API
             const response = await fetch('/api/data', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ newData: currentData }) // API kita mengharapkan objek dengan key 'newData'
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ newData: currentData })
             });
-
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Server merespon dengan error.');
+                 const errorData = await response.json();
+                 throw new Error(errorData.error || 'Gagal menyimpan data ke server.');
             }
 
-            statusMessage.textContent = 'Data berhasil disimpan ke server!';
+            statusMessage.textContent = 'Data berhasil disimpan!';
             statusMessage.style.color = 'green';
-
         } catch (error) {
             console.error('Gagal menyimpan data:', error);
-            statusMessage.textContent = `Terjadi kesalahan saat menyimpan! Error: ${error.message}`;
+            statusMessage.textContent = `Terjadi kesalahan saat menyimpan: ${error.message}`;
             statusMessage.style.color = 'red';
         }
         setTimeout(() => { statusMessage.textContent = ''; }, 3000);
     }
-    
-    // --- FUNGSI-FUNGSI LAIN (DIPERBAIKI & DIRAPIKAN) ---
     
     function renderPageContent() {
         const pageId = document.body.id;
@@ -96,17 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (pageId === 'admin-page-home') {
             const home = currentData.home || defaultData.home;
-            const heroBgUrlInput = document.getElementById('admin-heroBgUrl');
-            if (heroBgUrlInput) heroBgUrlInput.value = home.heroBackgroundImage && !home.heroBackgroundImage.startsWith('data:') ? home.heroBackgroundImage : '';
-            
+            document.getElementById('admin-heroBgUrl').value = home.heroBackgroundImage && !home.heroBackgroundImage.startsWith('data:') ? home.heroBackgroundImage : '';
             document.getElementById('admin-profileName').value = home.profileName || '';
             document.getElementById('admin-profileBio').value = home.profileBio || '';
             document.getElementById('admin-shortBio').value = home.shortBio || '';
             document.getElementById('profilePhotoPreview').src = home.profilePhoto || '';
-            
-            Object.keys(defaultData.home).filter(key => Array.isArray(defaultData.home[key])).forEach(key => {
-                renderDynamicSection(key, home[key] || []);
-            });
+            Object.keys(defaultData.home).filter(key => Array.isArray(defaultData.home[key])).forEach(key => renderDynamicSection(key, home[key]));
         } else if (pageId === 'admin-page-articles') {
             renderDynamicSection('articles', currentData.articles || []);
         } else if (pageId === 'admin-page-contact') {
@@ -131,11 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const heroBgFile = activePageElement.querySelector('#admin-heroBgFile').files[0];
             const heroBgUrl = activePageElement.querySelector('#admin-heroBgUrl').value;
             if (heroBgFile) homeData.heroBackgroundImage = await toBase64(heroBgFile);
-            else if (heroBgUrl) homeData.heroBackgroundImage = heroBgUrl;
-
+            else if (heroBgUrl || heroBgUrl === '') homeData.heroBackgroundImage = heroBgUrl;
+            
             const profilePhotoFile = activePageElement.querySelector('#admin-profilePhotoInput').files[0];
             if (profilePhotoFile) homeData.profilePhoto = await toBase64(profilePhotoFile);
-
+            
             homeData.profileName = activePageElement.querySelector('#admin-profileName').value;
             homeData.profileBio = activePageElement.querySelector('#admin-profileBio').value;
             homeData.shortBio = activePageElement.querySelector('#admin-shortBio').value;
@@ -153,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { section, index, key } = input.dataset;
             const parentKey = getParentKey(section);
             const targetArray = parentKey ? newData[parentKey][section] : newData[section];
-            if (targetArray?.[index] !== undefined) targetArray[index][key] = input.value;
+            if (targetArray && targetArray[index] !== undefined) targetArray[index][key] = input.value;
         });
 
         const filePromises = Array.from(activePageElement.querySelectorAll('.admin-input-file')).map(input => {
@@ -161,13 +194,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const parentKey = getParentKey(section);
             const targetArray = parentKey ? newData[parentKey][section] : newData[section];
             const file = input.files[0];
-            if (file && targetArray?.[index] !== undefined) {
+            if (file && targetArray && targetArray[index] !== undefined) {
                 return toBase64(file).then(base64 => { if (base64) targetArray[index][key] = base64; });
             }
             return Promise.resolve();
         });
         await Promise.all(filePromises);
-        currentData = newData; // Update global state after gathering all data
+        currentData = newData;
     }
     
     const toBase64 = file => new Promise((resolve, reject) => {
@@ -194,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let fieldsHTML = '';
             for (const key in item) {
                 if (key === 'id') continue;
-                const label = `<label>${key.replace(/_/g, ' ')}:</label>`;
+                const label = `<label style="text-transform: capitalize;">${key.replace(/_/g, ' ')}:</label>`;
                 if (key.toLowerCase().includes('image') || key.toLowerCase().includes('logo')) {
                     fieldsHTML += `${label}<input type="file" class="admin-input-file" data-section="${sectionKey}" data-index="${index}" data-key="${key}" accept="image/*"><img src="${item[key] || ''}" alt="preview" width="50" style="margin-top:5px; border: 1px solid #ddd;">`;
                 } else if (key === 'description' || key === 'content') {
@@ -227,8 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.save-section-btn').forEach(button => button.addEventListener('click', saveData));
     
-    document.querySelectorAll('.add-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
+    document.body.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.classList.contains('add-btn')) {
             const sectionKey = e.target.dataset.section;
             const parentKey = getParentKey(sectionKey);
             let targetArray;
@@ -244,11 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sectionKey === 'articles') newObject.id = 'article_' + Date.now();
             targetArray.unshift(newObject);
             renderDynamicSection(sectionKey, targetArray);
-        });
-    });
-
-    document.querySelectorAll('.delete-section-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
+        }
+        else if (target.classList.contains('remove-btn')) {
+            const { section, index } = target.dataset;
+            if (confirm('Anda yakin ingin menghapus item ini?')) {
+                const parentKey = getParentKey(section);
+                const targetArray = parentKey ? currentData[parentKey][section] : currentData[section];
+                targetArray.splice(parseInt(index, 10), 1);
+                renderDynamicSection(section, targetArray);
+            }
+        }
+        else if (target.classList.contains('edit-item-btn')) { target.closest('.dynamic-item').classList.add('editing'); }
+        else if (target.classList.contains('close-edit-btn')) { target.closest('.dynamic-item').classList.remove('editing'); }
+        else if (target.classList.contains('delete-section-btn')) {
             const sectionKey = e.target.dataset.section;
             if (confirm(`Anda yakin ingin menghapus seluruh section ${getSingularName(sectionKey)}?`)) {
                 const parentKey = getParentKey(sectionKey);
@@ -259,21 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 saveData().then(() => alert(`Section ${getSingularName(sectionKey)} telah dihapus.`));
             }
-        });
-    });
-
-    document.body.addEventListener('click', (e) => {
-        const target = e.target;
-        if (target.classList.contains('remove-btn')) {
-            const { section, index } = target.dataset;
-            const parentKey = getParentKey(section);
-            const targetArray = parentKey ? currentData[parentKey][section] : currentData[section];
-            targetArray.splice(parseInt(index, 10), 1);
-            renderDynamicSection(section, targetArray);
         }
-        if (target.classList.contains('edit-item-btn')) { target.closest('.dynamic-item').classList.add('editing'); }
-        if (target.classList.contains('close-edit-btn')) { target.closest('.dynamic-item').classList.remove('editing'); }
     });
-
-    loadDataForEditing();
 });

@@ -7,23 +7,44 @@
     <link rel="stylesheet" href="admin.css">
 </head>
 <body id="admin-page-articles">
-    <h1>Admin Panel</h1>
-    <div class="admin-nav">
-        <a href="admin.html" class="admin-tab-btn">Home Page</a>
-        <a href="admin-article.html" class="admin-tab-btn active">Articles</a>
-        <a href="admin-contact.html" class="admin-tab-btn">Contact Page</a>
-    </div>
 
-    <div class="form-section">
-        <div class="section-header">
-            <h2>Manage Articles</h2>
-            <button class="add-btn" data-section="articles">+</button>
+    <div id="login-container" style="display: none;">
+        <div class="form-section" style="max-width: 400px; margin: 100px auto;">
+            <h2>Admin Login</h2>
+            <form id="login-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" required autocomplete="username">
+                <label for="password">Password</label>
+                <input type="password" id="password" required autocomplete="current-password">
+                <button type="submit" class="save-section-btn">Log In</button>
+                <p id="login-error" style="color: red; text-align: center; margin-top: 10px;"></p>
+            </form>
         </div>
-        <div id="articles-admin-container"></div>
-        <button class="save-section-btn">Simpan Articles</button>
     </div>
 
-    <div id="status-message"></div>
+    <div id="main-content" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; margin-bottom: 20px;">
+            <h1>Admin Panel</h1>
+            <button id="logout-btn" class="delete-section-btn">Logout</button>
+        </div>
+        <div class="admin-nav">
+            <a href="admin.html" class="admin-tab-btn">Home Page</a>
+            <a href="admin-article.html" class="admin-tab-btn active">Articles</a>
+            <a href="admin-contact.html" class="admin-tab-btn">Contact Page</a>
+        </div>
+
+        <div class="form-section">
+            <div class="section-header">
+                <h2>Manage Articles</h2>
+                <button class="add-btn" data-section="articles">+</button>
+            </div>
+            <div id="articles-admin-container"></div>
+            <button class="save-section-btn" data-section-group="articles">Simpan Articles</button>
+        </div>
+
+        <div id="status-message"></div>
+    </div>
+    
     <script src="admin.js"></script>
 </body>
 </html>

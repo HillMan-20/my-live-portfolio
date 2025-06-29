@@ -174,16 +174,20 @@ main { padding-top: 60px; }
 .timeline-content p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #ccc; }
 
 /* Styling untuk Section Lainnya */
-.content-section { margin-bottom: 280px;}
+.content-section { text-decoration: none; margin-bottom: 280px;}
 .content-section { margin-top: 80px; }
-.content-section h2 { text-align: center; font-size: 2.5rem; margin-bottom: 40px; color: #ffffff; }
-.card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+.content-section h2 { text-decoration: none; text-align: center; font-size: 2.5rem; margin-bottom: 40px; color: #ffffff; }
+.card-container { text-decoration: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
 
 /* Style Kartu Default */
 .card { background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px; width: calc(33.333% - 20px); box-sizing: border-box; transition: transform 0.3s ease, box-shadow 0.3s ease; backdrop-filter: blur(5px); display: flex; flex-direction: column; }
 .card:hover {box-shadow: 10px 10px 5px #fd3838; }
 .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; margin-bottom: 15px; }
 .card h3 { margin-top: 0; margin-bottom: 10px; color: #ffffff; }
+a.card {
+    text-decoration: none; /* Menghilangkan garis bawah */
+    color: inherit;        /* Membuat warna teks (seperti judul) mengikuti aturan .card h3, bukan warna biru default link */
+}
 .card p {
     color: #ccc;
     font-size: 0.9rem;
@@ -374,6 +378,17 @@ p.skill-name {
 /* ... (kode CSS yang sudah ada) ... */
 
 /* --- NEW CONTACT PAGE STYLES --- */
+.content-section-contact { margin-bottom: 80px;}
+.content-section-contact { margin-top: 80px; }
+#page-contact {
+    background-color: #121212; /* Warna fallback */
+    color: #e0e0e0; /* Warna teks default */
+    background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url(''); /* Inisialisasi tanpa gambar spesifik */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
 
 #contact-hero {
     min-height: 80vh; /* Sesuaikan tinggi section agar peta terlihat */
@@ -393,8 +408,11 @@ p.skill-name {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.1); /* MENJADI 10% OPACITY */
+    background-color: #121212;
     z-index: 1;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.5s ease-in-out;
 }
 
 .contact-content-wrapper {
@@ -403,6 +421,7 @@ p.skill-name {
     display: flex;
     justify-content: space-between;
     align-items: flex-end; /* Memastikan elemen di bawah */
+    margin-top: 20px;
     padding-bottom: 80px; /* Jarak dari bawah halaman */
     width: 100%; /* Agar flexbox bekerja dengan benar */
 }
@@ -649,8 +668,143 @@ p.skill-name {
     }
 }
 /* Footer */
-footer { padding: 10px 0; background: #0a0a0a; text-align: center; color: #888; }
+footer {
+    padding: 20px 0; /* Sedikit menambah padding agar latar terlihat lebih baik */
+    text-align: center;
+    position: relative; /* Diperlukan agar lapisan overlay bekerja dengan benar */
+    z-index: 1;
+    overflow: hidden; /* Memastikan tidak ada yang bocor */
+}
 
+footer {
+    padding: 40px 0;
+    background-color: #000000; /* Warna latar belakang footer */
+    color: #e0e0e0; /* Warna teks footer */
+}
+
+.footer-redesign {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Mengaktifkan wrap untuk tata letak responsif */
+}
+
+.footer-brand {
+    flex-basis: 30%; /* Lebar untuk bagian brand */
+    min-width: 200px;
+}
+
+.footer-brand h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.footer-brand p {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 0;
+}
+
+.footer-links {
+    flex-basis: 65%; /* Lebar untuk bagian links */
+    display: flex;
+    justify-content: flex-end; /* Mengatur kolom ke kanan */
+    gap: 40px;
+    flex-wrap: wrap; /* Mengaktifkan wrap untuk tata letak responsif */
+}
+
+.footer-column {
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.footer-column h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-column ul li a:hover {
+    color: #fd3838;
+}
+
+.footer-column p {
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-redesign {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-brand {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .footer-links {
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .footer-column {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .footer-links {
+        flex-direction: row;
+        gap: 20px;
+    }
+
+    .footer-column ul {
+        text-align: center;
+    }
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+
+    /* --- BAGIAN PENTING --- */
+    /* Ganti URL_GAMBAR_ANDA dengan link gambar dari internet */
+    background-image: linear-gradient(rgba(10, 10, 10, 0.900), rgba(10, 10, 10, 0.900)), url('https://i.pinimg.com/736x/9e/d7/eb/9ed7ebd951fd32e6dee5454b98811050.jpg');
+    background-size: cover;
+    background-position: center;
+
+}
 /* --- CSS UNTUK PRELOADER --- */
 #preloader {
     position: fixed;
@@ -730,117 +884,266 @@ footer { padding: 10px 0; background: #0a0a0a; text-align: center; color: #888; 
 .skeleton-container.hidden { display: none; }
 
 /* --- Media Queries --- */
+/* --- Media Queries --- */
 @media (max-width: 1100px) {
     .container { padding: 0 50px; }
     .hero-text h1 { font-size: 2.8rem; }
+    .contact-form-wrapper { right: 50px; width: 350px; }
 }
+
 @media (max-width: 910px) {
+    .container { padding: 0 20px; }
     main { padding-top: 60px; }
     header .container { height: 60px; }
-    .container { padding: 0 20px; }
     nav { display: none; position: fixed; top: 0; right: -100%; width: 70%; height: 100vh; background: rgba(20, 20, 20, 0.98); flex-direction: column; justify-content: center; align-items: center; transition: right 0.5s ease-in-out; }
     nav.nav-active { display: flex; right: 0; }
     .hamburger { display: flex; }
     
     #home {
-        display: flex;
-        min-height: 0;
-        height: auto;
-        padding: 60px 0;
-        align-items: center;
-        justify-content: center;
+        display: flex; min-height: 0; height: auto;
+        padding: 60px 0; align-items: center; justify-content: center;
     }
     .hero-content {
-        position: static;
-        transform: none;
-        flex-direction: column;
-        text-align: center;
-        gap: 30px;
-        width: 100%;
+        position: static; transform: none; flex-direction: column;
+        text-align: center; gap: 30px; width: 100%;
     }
     .photo-wrapper { order: -1; }
     .hero-text h1 { font-size: 2.8rem; }
+    .short-bio { text-align: center; }
     .social-icons { justify-content: center; }
     
     .timeline-container::before { left: 10px; }
     .timeline-item { margin-left: 20px; }
     .timeline-item::before { left: -18px; }
+
     .card { width: 100%; max-width: 400px; }
-    .skill-icon-wrapper { width: 100px; height: 100px; }
-
-    card-container {
-        /* Memastikan kartu menyesuaikan lebar penuh dengan padding kontainer */
-        padding: 0; /* Hapus padding default jika ada di .card-container agar .card bisa 100% */
-    }
-
-    .card {
-        width: 100%; /* Memastikan kartu mengambil lebar penuh di layar kecil */
-        max-width: none; /* Hapus batasan max-width jika ada dari luar media query */
-        padding: 15px; /* Sesuaikan padding kartu agar tidak terlalu besar */
-        margin-left: auto; /* Untuk centering jika ada sisa ruang */
-        margin-right: auto; /* Untuk centering jika ada sisa ruang */
-    }
-
-    .card img {
-        height: 150px; /* Sesuaikan tinggi gambar thumbnail agar tidak terlalu besar/kecil */
-    }
+    .skill-item { width: 120px; }
+    .skill-icon-wrapper { width: 90px; height: 90px; }
+    .skill-icon-wrapper img { width: 60%; height: 60%; }
+    p.skill-name { font-size: 0.9rem; }
     
-    /* --- Perbaikan Spesifik untuk Halaman Detail Artikel --- */
-    .article-detail-container {
-        padding-left: 20px; /* Sesuaikan padding agar konten tidak menempel ke tepi */
-        padding-right: 20px; /* Sesuaikan padding agar konten tidak menempel ke tepi */
-        padding-top: 20px; /* Sesuaikan padding atas */
-        padding-bottom: 20px; /* Sesuaikan padding bawah */
-        max-width: none; /* Hapus batasan max-width agar responsif penuh */
-    }
+    .article-detail-container { max-width: 100%; }
+    #article-detail-title { font-size: 2rem; }
+    .article-detail-meta { font-size: 1rem; }
+    #article-detail-image { max-height: 300px; }
+    #article-detail-content { font-size: 1rem; line-height: 1.5; }
 
-    #article-detail-title {
-        font-size: 2rem; /* Ukuran font lebih kecil untuk judul di layar kecil */
-    }
-
-    .article-detail-meta {
-        font-size: 1rem; /* Ukuran font lebih kecil untuk meta data */
-    }
-
-    #article-detail-image {
-        max-height: 300px; /* Batasi tinggi gambar agar tidak terlalu dominan */
-    }
-
-    #article-detail-content {
-        font-size: 1rem; /* Ukuran font lebih kecil untuk isi teks */
-        line-height: 1.5; /* Sesuaikan line-height */
-    }
-
-    #article-detail-content p {
-        margin-bottom: 1rem; /* Kurangi margin bawah paragraf */
-    }
-
-    /* Memastikan teks tetap wrap dan tidak overflow (sudah ditangani di CSS sebelumnya, ini hanya untuk verifikasi di media query) */
-    #article-detail-content {
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-
-
-    .skill-item {
-        /* Di layar kecil, kita bisa membuatnya sedikit lebih sempit atau tetap sama */
-        width: 120px; /* Contoh: sedikit lebih sempit di mobile */
-        /* Pastikan properti word-wrap/overflow-wrap tetap berlaku */
-    }
-
-    .skill-icon-wrapper {
-        width: 90px;  /* Icon mungkin perlu lebih kecil di mobile */
-        height: 90px; /* Icon mungkin perlu lebih kecil di mobile */
-    }
-    .skill-icon-wrapper img {
-        width: 60%; /* Sesuaikan ukuran gambar di dalam wrapper */
-        height: 60%;
-    }
-
-    p.skill-name {
-        font-size: 0.9rem; /* Ukuran font teks nama skill mungkin lebih kecil */
-        /* Properti word-wrap/overflow-wrap sudah diatur secara global dan akan tetap efektif */
-    }
-
+    /* --- PERBAIKAN TOTAL HALAMAN KONTAK RESPONSIVE --- */
+    @media (max-width: 910px) {
+        /* ... (Aturan lain yang sudah ada) ... */
     
+        /* --- Blok Halaman Kontak Responsif --- */
+        #contact-hero {
+            min-height: 0;
+            height: auto;
+            padding: 60px 0;
+            display: block; /* Menjadi block biasa */
+            overflow: visible; /* Agar tidak memotong konten */
+        }
+        
+        /* --- PERBAIKAN --- */
+        /* Jangan sembunyikan overlay, cukup reset posisinya agar konten di dalamnya tetap terlihat */
+        #contact-map-overlay {
+            display: block;      /* Pastikan elemen ini terlihat */
+            position: static;    /* Kembalikan ke alur dokumen normal */
+            background: none;    
+    
+        .contact-content-wrapper {
+            position: static;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+    
+        .contact-left {
+            width: 100%;
+            text-align: center;
+            padding-right: 0;
+        }
+    
+        /* Aturan untuk menengahkan semua teks di bagian kiri */
+        .contact-left #contact-title,
+        .contact-subtitle-text,
+        .contact-detail h3,
+        .contact-detail p {
+            text-align: center;
+        }
+        .contact-details-group {
+            flex-direction: column;
+            align-items: center;
+        }
+        .social-icons-contact {
+            justify-content: center;
+        }
+    
+        .contact-form-wrapper {
+            position: static;
+            transform: none;
+            width: 100%;
+            max-width: 500px; /* Pastikan ada batas lebar */
+            margin-top: 50px; /* Jarak dari konten di atasnya */
+            padding: 0;
+        }
+    
+        .feedback-form-card {
+            padding: 25px;
+            background: #fff;
+            box-shadow: none;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* --- NEW Contact Page Layout --- */
+
+#contact-section h2#contact-main-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: #ffffff;
+}
+
+/* ...DENGAN KODE BARU INI */
+.contact-layout-wrapper {
+    display: flex;
+    justify-content: space-between; /* Memberi ruang di antara kolom */
+    align-items: flex-start; /* Sejajarkan dari atas */
+    gap: 5%; /* Beri jarak 5% dari total lebar */
+}
+
+.contact-column {
+    flex-basis: 47.5%;
+    max-width: 600px; /* Atur lebar setiap kolom agar muat 2 dalam satu baris */
+    /* 47.5% + 47.5% + 5% (gap) = 100% */
+}
+
+#contact-left h3#contact-title {
+    font-size: 2.2rem;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+#contact-left .contact-subtitle-text {
+    font-size: 1rem;
+    color: #bbb;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+#contact-left .contact-detail h3 {
+    font-size: 0.9rem;
+    color: #bbb;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#contact-left .contact-detail p {
+    font-size: 1rem;
+    color: #fff;
+    line-height: 1.5;
+    margin: 0 0 5px 0;
+}
+
+.social-icons-contact {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* Aturan untuk Form Card tetap sama, hanya beberapa penyesuaian */
+.feedback-form-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-form-card h3 {
+    font-size: 1.1rem;
+    color: #333;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#contact-form input, #contact-form textarea {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    color: #333;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#contact-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+#contact-form button {
+    background: #121212;
+    color: #fff;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.3s;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+#contact-form button:hover {
+    background: #333;
+}
+
+/* Media Query untuk tata letak kontak yang baru */
+@media (max-width: 910px) {
+    .contact-layout-wrapper {
+        flex-direction: column; /* Tumpuk kolom secara vertikal */
+        align-items: center; /* Pusatkan kolom */
+        gap: 50px;
+    }
+    .contact-column {
+        width: 100%;
+        max-width: 500px; /* Batasi lebar agar tidak terlalu lebar di tablet */
+        min-width: unset;
+        flex: unset;
+    }
+    #contact-left {
+        text-align: center; /* Pusatkan teks di kolom kiri */
+    }
+    .social-icons-contact {
+        justify-content: center; /* Pusatkan ikon sosial media */
+    }
+}
+    .footer-redesign {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-brand {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .footer-links {
+        justify-content: center;
+        gap: 30px;
+    }
+    .footer-column {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
 }

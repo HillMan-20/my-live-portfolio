@@ -244,6 +244,7 @@ function renderAndSwap(contentId, skeletonId, data, renderFn, displayType = 'fle
 // script.js
 
 function renderHomePage(data, isCriticalOnly = false) {
+    document.body.style.backgroundImage = '';
     // Render bagian yang ada di data kritis
     if (data.heroBackgroundImage) {
         document.getElementById('hero-background-image-layer').style.backgroundImage = `url('${data.heroBackgroundImage}')`;
@@ -270,6 +271,7 @@ function renderHomePage(data, isCriticalOnly = false) {
 }
 
 function renderArticlePage(articles) {
+    document.body.style.backgroundImage = '';
     const container = document.getElementById('articles-container');
     if (!container) return;
     container.innerHTML = '';
@@ -288,8 +290,36 @@ function renderArticlePage(articles) {
 
 function renderContactPage(data) {
     if (!data) return;
-    document.getElementById('contact-title').textContent = data.title || 'Get in Touch';
-    document.getElementById('contact-subtitle').textContent = data.subtitle || 'Hubungi saya...';
+
+    // Mengambil elemen dari halaman kontak
+    const contactTitle = document.getElementById('contact-title');
+    const contactSubtitle = document.getElementById('contact-subtitle');
+    const bodyElement = document.getElementById('page-contact'); // Mengambil elemen body
+    const overlay = document.getElementById('contact-map-overlay'); // Mengambil overlay yang sudah ada
+
+    // Mengisi teks judul dan subjudul
+    if (contactTitle) contactTitle.textContent = data.title || 'Get in Touch';
+    if (contactSubtitle) contactSubtitle.textContent = data.subtitle || 'Hubungi saya...';
+
+    // --- LOGIKA UTAMA UNTUK LATAR BELAKANG ---
+    const contactBgImage = data.backgroundImage;
+
+    if (bodyElement && contactBgImage) {
+        // Jika ada URL gambar latar di dalam data, terapkan ke 'body'
+        bodyElement.style.backgroundImage = `linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('${contactBgImage}')`;
+        
+        // Hapus gambar dari elemen overlay agar tidak tumpang tindih
+        if(overlay) {
+            overlay.style.background = `none`; 
+        }
+
+    } else if (overlay) {
+        // Jika tidak ada gambar di data, gunakan gambar fallback di overlay seperti semula
+        overlay.style.background = `linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('images/map-background.jpg')`;
+    }
+    // Jika tidak ada gambar, body akan otomatis menggunakan style default dari styles.css
+
+    // Mengisi ikon sosial media (kode ini sudah ada dan bisa dipertahankan jika ada)
     const container = document.getElementById('contact-social-media');
     if (container) {
         container.innerHTML = '';
@@ -307,6 +337,7 @@ function renderContactPage(data) {
 }
 
 function renderArticleDetailPage(articles) {
+    document.body.style.backgroundImage = '';
     const container = document.querySelector('.article-detail-container');
     if (!container) return;
     const params = new URLSearchParams(window.location.search);

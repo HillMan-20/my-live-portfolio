@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultData = {
         home: { heroBackgroundImage: '', profilePhoto: '', profileName: '', profileBio: '', shortBio: '', educations: [], experiences: [], skills: [], activities: [], projects: [], certifications: [] },
         articles: [],
-        contact: { title: "Get in Touch", subtitle: "Hubungi saya melalui sosial media di bawah ini atau kirimkan pesan langsung.", placeholderName: "Nama Anda", placeholderEmail: "Email Anda", placeholderMessage: "Pesan Anda", buttonText: "Kirim Pesan", socialMedia: [] }
+        contact: { title: "Get in Touch", subtitle: "Hubungi saya melalui sosial media di bawah ini atau kirimkan pesan langsung.", placeholderName: "Nama Anda", placeholderEmail: "Email Anda", placeholderMessage: "Pesan Anda", buttonText: "Kirim Pesan", socialMedia: [], backgroundImage: '' }  
     };
 
     async function loadDataForEditing() {
@@ -147,6 +147,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const contact = currentData.contact || defaultData.contact;
             document.getElementById('contact-title-input').value = contact.title || '';
             document.getElementById('contact-subtitle-input').value = contact.subtitle || '';
+            const contactBgFile = activePageElement.querySelector('#admin-contactBgFile').files[0];
+            const currentContactBg = currentData.contact.backgroundImage;
+        
+            if (contactBgFile) {
+                // Jika ada file baru, unggah dan perbarui URL
+                fileUploadPromises.push(uploadImageToCloudinary(contactBgFile).then(url => {
+                    contactData.backgroundImage = url;
+                }).catch(e => {
+                    console.error("Gagal unggah latar belakang kontak:", e);
+                    contactData.backgroundImage = currentContactBg; // Jika gagal, pertahankan yg lama
+                }));
+            } else {
+                // Jika tidak ada file baru, pertahankan URL yg lama
+                contactData.backgroundImage = currentContactBg;
+            }
+            document.getElementById('contactBgPreview').src = contact.backgroundImage || '';
             document.getElementById('contact-placeholder-name').value = contact.placeholderName || '';
             document.getElementById('contact-placeholder-email').value = contact.placeholderEmail || '';
             document.getElementById('contact-placeholder-message').value = contact.placeholderMessage || '';
@@ -212,12 +228,25 @@ document.addEventListener('DOMContentLoaded', () => {
     
         else if (pageId === 'admin-page-contact') {
             const contactData = newData.contact;
-            contactData.title = activePageElement.querySelector('#contact-title-input').value;
-            contactData.subtitle = activePageElement.querySelector('#contact-subtitle-input').value;
-            contactData.placeholderName = activePageElement.querySelector('#contact-placeholder-name').value;
-            contactData.placeholderEmail = activePageElement.querySelector('#contact-placeholder-email').value;
-            contactData.placeholderMessage = activePageElement.querySelector('#contact-placeholder-message').value;
-            contactData.buttonText = activePageElement.querySelector('#contact-button-text').value;
+    contactData.title = activePageElement.querySelector('#contact-title-input').value;
+    contactData.subtitle = activePageElement.querySelector('#contact-subtitle-input').value;
+    // --- AWAL DARI LOGIKA BARU YANG DITAMBAHKAN ---
+    const contactBgFile = activePageElement.querySelector('#admin-contactBgFile').files[0];
+    const currentContactBg = currentData.contact.backgroundImage; // Ambil URL gambar yang sekarang
+
+    if (contactBgFile) {
+        // Jika ada file BARU yang dipilih, maka unggah.
+        fileUploadPromises.push(uploadImageToCloudinary(contactBgFile).then(url => {
+            contactData.backgroundImage = url; // Ganti URL dengan hasil upload
+        }).catch(e => {
+            console.error("Gagal unggah latar belakang kontak:", e);
+            contactData.backgroundImage = currentContactBg; // Jika gagal, pertahankan yg lama
+        }));
+    } else {
+        // Jika TIDAK ada file baru yang dipilih, maka tetap gunakan URL yang lama.
+        contactData.backgroundImage = currentContactBg;
+    }
+
         }
     
         // --- BAGIAN UNTUK DYNAMIC SECTIONS (Educations, Skills, Articles, dll.) ---
@@ -249,24 +278,22 @@ for (const sectionKey of dynamicSectionsToProcess) {
         for (const input of fileInputs) {
             const key = input.dataset.key;
             const file = input.files[0];
-            const currentImageUrl = itemData[key]; // URL gambar yang sudah ada di itemData
-
+            const currentImageUrl = itemData[key]; // URL gambar yang sudah ada
+        
             if (file) {
+                // Jika ada file BARU yang dipilih, unggah dan perbarui URL.
                 fileUploadPromises.push(uploadImageToCloudinary(file).then(url => {
                     if (url) {
-                        itemData[key] = url;
+                        itemData[key] = url; // Gunakan URL baru dari Cloudinary
                     } else {
-                        itemData[key] = currentImageUrl; // Fallback ke URL lama jika upload gagal
+                        itemData[key] = currentImageUrl; // Jika upload gagal, pertahankan URL lama
                     }
                 }).catch(e => {
                     console.error(`Failed to upload image for ${sectionKey} item ${i} key ${key}:`, e);
-                    itemData[key] = currentImageUrl; // Fallback ke URL lama jika upload gagal
+                    itemData[key] = currentImageUrl; // Jika error, pertahankan URL lama
                 }));
-            } else if (!file && input.value === '' && currentImageUrl) {
-                // Jika input file dikosongkan dan sebelumnya ada gambar (berarti ingin menghapus gambar)
-                itemData[key] = ''; // Kosongkan URL gambar
             } else {
-                // Jika tidak ada file baru dan input tidak dikosongkan, pertahankan URL lama
+                // Jika TIDAK ada file baru yang dipilih, JANGAN UBAH URL yang sudah ada.
                 itemData[key] = currentImageUrl;
             }
         }

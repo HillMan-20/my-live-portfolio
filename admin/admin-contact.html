@@ -34,30 +34,24 @@
         </div>
 
         <div class="form-section">
-            <h2>Teks Halaman Kontak</h2>
+            <h2>Konten Halaman Kontak</h2>
+            
             <label for="contact-title-input">Judul Utama (e.g., Get in Touch)</label>
             <input type="text" id="contact-title-input">
             
             <label for="contact-subtitle-input">Sub-judul (teks di bawah judul)</label>
             <textarea id="contact-subtitle-input" rows="3"></textarea>
+            <hr style="margin: 20px 0;">
+        
+            <label for="admin-contactBgFile">Gambar Latar Belakang Halaman Kontak:</label>
+            <input type="file" id="admin-contactBgFile" accept="image/*">
+            <p style="margin-top: 10px; font-weight: normal;">Preview:</p>
+            <img id="contactBgPreview" src="" alt="Preview Latar Belakang Kontak" class="image-preview">
             
-            <hr>
-            <h3>Teks Formulir</h3>
-            <label for="contact-placeholder-name">Placeholder untuk Nama</label>
-            <input type="text" id="contact-placeholder-name">
-            
-            <label for="contact-placeholder-email">Placeholder untuk Email</label>
-            <input type="text" id="contact-placeholder-email">
-
-            <label for="contact-placeholder-message">Placeholder untuk Pesan</label>
-            <input type="text" id="contact-placeholder-message">
-            
-            <label for="contact-button-text">Teks Tombol Kirim</label>
-            <input type="text" id="contact-button-text">
-
-            <button class="save-section-btn" data-section-group="contact-text">Simpan Teks Halaman</button>
+            <button class="save-section-btn" data-section-group="contact-content">Simpan Konten Kontak</button>
         </div>
-
+        
+        
         <div class="form-section">
             <div class="section-header">
                 <h2>Manage Social Media</h2>
